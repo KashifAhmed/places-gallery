@@ -1,10 +1,9 @@
-
 'use strict';
-module.exports = function (db, app, router) {
+module.exports = function(db, app, router) {
     var scope = {
         services: {},
         controllers: {},
-        collectionName: "Category"
+        collectionName: "Place"
     };
     require('./model')(app, db, scope);
     require('./service')(app, scope);
