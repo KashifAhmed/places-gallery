@@ -1,20 +1,24 @@
 class LoginController {
 
-    constructor() {
-
+    constructor(api) {
+        console.log(api);
+        //api.attemptAuth()
     }
 
-    // onItemClicked(clickedItem) {
-    //     this.items = this.items.map((item) => {
-    //         item.isActive = item.label === clickedItem.label;
-    //         return item;
-    //     });
-    // }
+    doLogin() {
+        console.log("---- Login ----");
+        this.api.attemptAuth({
+            email: "kashif91ahmed@gmail.com",
+            password: "abc123++"
+        }).then(function(__d) {
+            console.log(__d);
+        });
+    }
 }
 
 const Login = {
     template: require('./login.html'),
-    controller: () => new LoginController()
+    controller: (api) => new LoginController(api)
 };
 
 export default Login;

@@ -9,6 +9,7 @@ import ServiceFactory from './app.utils';
 import router from 'angular-ui-router';
 import Places from './components/places/places'
 import AddPlace from './components/addPlace/addPlace'
+import Api from './services/api.service'
 
 import '../style/app.scss';
 import 'angular-ui-select/select.min.css';
@@ -53,7 +54,8 @@ angular
     .component('login', Login)
     .component('register', Register)
     .component('places', Places)
-    .component('addPlace', AddPlace);
+    .component('addPlace', AddPlace)
+    .service('api', Api)
 
 angular
     .element(document)
