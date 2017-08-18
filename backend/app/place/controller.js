@@ -242,32 +242,29 @@ module.exports = function(app, scope) {
 
     // Get all my favorite Item
     scope.controllers._getFavoriteItem = function(req, res) {
-            var _responseFields = '_id locationName',
-                user = req.user,
-                _query = { favorite: { $elemMatch: { "$in": [user.id] } } }
-            scope.services._searchItem(_query, _responseFields, function(error, items) {
-                if (error == null) {
-                    res.status(200).send({
-                        code: 200,
-                        success: true,
-                        message: "Successfully Retrieve Items",
-                        data: items
-                    });
-                } else {
-                    res.status(504).send({
-                        code: 504,
-                        succes: false,
-                        message: "Error On Retrieving Items",
-                        error: error
-                    });
-                }
-            });
+        var _responseFields = '_id locationName',
+            user = req.user,
+            _query = { favorite: { $elemMatch: { "$in": [user.id] } } }
+        scope.services._searchItem(_query, _responseFields, function(error, items) {
+            if (error == null) {
+                res.status(200).send({
+                    code: 200,
+                    success: true,
+                    message: "Successfully Retrieve Items",
+                    data: items
+                });
+            } else {
+                res.status(504).send({
+                    code: 504,
+                    succes: false,
+                    message: "Error On Retrieving Items",
+                    error: error
+                });
+            }
+        });
+    }
 
-
-
-
-        }
-        // Support Method
+    // Support Method
     var milesToRadian = function(miles) {
         var earthRadiusInMiles = 3959;
         return miles / earthRadiusInMiles;

@@ -23,9 +23,6 @@ module.exports = function(app, scope) {
     }
 
 
-    // Mark item in favorite list
-    scope.services._markItemMyFavorite = function(item_id, user_id) {
 
-    }
 
 };
