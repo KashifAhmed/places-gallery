@@ -1,17 +1,24 @@
 var express = require('express'),
     bodyParser = require('body-parser'),
+    fileUpload = require('express-fileupload'),
     app = express(),
     morgan = require('morgan'),
-    mongoose = require('mongoose');
+    mongoose = require('mongoose'),
+    path = require('path');
+
 
 // configure app
 app.use(morgan('dev')); // log requests to the console
 
+app.use(fileUpload());
 // configure body parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-var port = process.env.PORT || 5000; // set our port
+
+
+var port = process.env.PORT || 8000; // set our port
 // create our router
 var router = express.Router();
 

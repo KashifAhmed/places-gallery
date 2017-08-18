@@ -1,4 +1,6 @@
 'use strict';
+var path = require('path');
+
 module.exports = function(app, scope) {
 
 
@@ -10,32 +12,66 @@ module.exports = function(app, scope) {
 
         app.services._checkRequire(_requestData, requireDate, function(error) {
             if (error == false) {
-                app.services._checkExist({ locationName: _requestData.locationName }, scope.collectionName, function(error_checkExist, isExist) {
+                app.services._checkExist({
+                    locationName: _requestData.locationName
+                }, scope.collectionName, function(error_checkExist, isExist) {
                     if (error_checkExist == null) {
                         if (!isExist) {
                             _requestData.created_by = req.user._id;
-                            // Update geomery Object for 2dsphare
                             _requestData.geometry = {
                                 type: 'Point',
                                 coordinates: _requestData.latLng
                             }
-                            app.services._createItem(_requestData, scope.collectionName, function(error_createItem, success_createItem) {
-                                if (error_createItem == null) {
-                                    res.status(200).send({
-                                        code: 200,
-                                        success: true,
-                                        message: 'Successfully Create Item',
-                                        data: app.services._successResponse(success_createItem, responseFileds)
-                                    });
-                                } else {
-                                    res.status(503).send({
-                                        code: 503,
-                                        success: false,
-                                        error: error_createItem,
-                                        message: "Error On Create Item"
-                                    });
-                                }
-                            });
+                            if (req.files && req.files.placeImage) {
+                                var placeImage = req.files.placeImage;
+                                console.log(req.files.placeImage);
+                                var fileName = new Date();
+                                var fname = fileName.getTime() + '.jpg';
+                                var Url = path.resolve(__dirname, '../../public/uploads/' + fname);
+                                placeImage.mv(Url, function(err) {
+                                    if (err) {
+                                        return res.status(500).send(err);
+                                    } else {
+                                        _requestData.image = fname;
+                                        app.services._createItem(_requestData, scope.collectionName, function(error_createItem, success_createItem) {
+                                            if (error_createItem == null) {
+                                                res.status(200).send({
+                                                    code: 200,
+                                                    success: true,
+                                                    message: 'Successfully Create Item',
+                                                    data: app.services._successResponse(success_createItem, responseFileds)
+                                                });
+                                            } else {
+                                                res.status(503).send({
+                                                    code: 503,
+                                                    success: false,
+                                                    error: error_createItem,
+                                                    message: "Error On Create Item"
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+                            } else {
+                                app.services._createItem(_requestData, scope.collectionName, function(error_createItem, success_createItem) {
+                                    if (error_createItem == null) {
+                                        res.status(200).send({
+                                            code: 200,
+                                            success: true,
+                                            message: 'Successfully Create Item',
+                                            data: app.services._successResponse(success_createItem, responseFileds)
+                                        });
+                                    } else {
+                                        res.status(503).send({
+                                            code: 503,
+                                            success: false,
+                                            error: error_createItem,
+                                            message: "Error On Create Item"
+                                        });
+                                    }
+                                });
+                            }
+
                         } else {
                             res.status(409).send({
                                 code: 409,
