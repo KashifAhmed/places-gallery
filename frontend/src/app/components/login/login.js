@@ -1,24 +1,39 @@
 class LoginController {
 
-    constructor(api) {
-        console.log(api);
+    constructor(api, $state) {
+        this.api = api;
+        this.user = {};
+        this.progress = false;
+        this.state = $state;
+
+
         //api.attemptAuth()
     }
 
     doLogin() {
         console.log("---- Login ----");
-        this.api.attemptAuth({
-            email: "kashif91ahmed@gmail.com",
-            password: "abc123++"
-        }).then(function(__d) {
-            console.log(__d);
-        });
+        if(this.user.email && this.user.password){
+            this.progress = true;
+            this.api.attemptAuth(this.user).then((response)=>{
+                
+                if(response.data.code == 200){
+                    var data = response.data.data;
+                    this.api.setHeader('Authorization', data.access_token);
+                    this.state.go('places');
+                }else{
+                    alert(response.data.message);
+                }
+            }).catch((error)=>{
+                console.log(error);
+            });
+        }
     }
 }
 
 const Login = {
     template: require('./login.html'),
-    controller: (api) => new LoginController(api)
+    controller: (api, $state) => new LoginController(api, $state),
+    controllerAs: 'loginCtrl'
 };
 
 export default Login;

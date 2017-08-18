@@ -1,63 +1,42 @@
 <div class="container">
     <div>
-        <button ui-sref="addPlace" type="button" class="pull-right btn btn-success">ADD</button>
+        <button ui-sref="addPlace" type="button" class="pull-right btn btn-success btn-outline-success">Add</button>
         <h3>Places</h3>
-
+        <div>
+            <form class="row">
+                <div class="form-group col-md-3">
+                    <label for="locationNameLabel">Location Name</label>
+                    <input type="text" class="form-control" id="locationName"  placeholder="San Francisco">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="countryLabel">Country</label>
+                    <input type="text" class="form-control" id="exampleInputPassword1" placeholder="Pakistan">
+                </div>
+                <div class="form-group col-md-3">
+                    <label for="cityLabel">City</label>
+                    <input type="text" class="form-control" id="cityLabel" placeholder="Karachi">
+                </div>
+            </form>
+        </div>
     </div>
 
-
-    <div class="jumbotron">
+    <br/>
+    <div class="jumbotron" ng-repeat="place in placesCtrl.itemsList.rows">
         <div class="row">
-            <div class="col-xs-6 col-md-4">
-                <img src="https://cdn.pixabay.com/photo/2013/04/06/11/50/image-editing-101040_960_720.jpg" width="100%" alt="..." class="img-rounded">
+            <div class="col-md-3">
+                <img src="https://cdn.pixabay.com/photo/2013/04/06/11/50/image-editing-101040_960_720.jpg" alt="..." class="img-thumbnail">
             </div>
-            <div class="col-xs-12 col-sm-6 col-md-8">
-                <h2>University</h2>
-                <!-- <span class="label label-default">Pakistan</span> -->
+            <div class="col-md-9">
+                <h2 class="inline-block">
+                    <span>{{place.locationName}}</span>
+                    <i class="fa fa-heart-o" aria-hidden="true" ng-if="!place.isFavorite" ng-click="placesCtrl.markFavorite(place)"></i>
+                    <i class="fa fa-heart" aria-hidden="true" ng-if="place.isFavorite" ng-click="placesCtrl.markFavorite(place)"></i>
+                </h2>
+                <span class="label label-default pull-right">{{place.country}}, {{place.city}}</span>
                 <p>
-                    An image is an artifact that depicts visual perception, for example, a photo or a two-dimensional picture, that has a similar appearance to some subject—usually a physical object or a person, thus providing a depiction of it. Wikipedia
+                    {{place.description}}
                 </p>
             </div>
         </div>
     </div>
-    <div class="jumbotron">
-        <div class="row">
-            <div class="col-xs-6 col-md-4">
-                <img src="http://wallpaper-gallery.net/images/image/image-3.jpg" width="100%" alt="..." class="img-rounded">
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-8">
-                <h2>University</h2>
-                <p>
-                    An image is an artifact that depicts visual perception, for example, a photo or a two-dimensional picture, that has a similar appearance to some subject—usually a physical object or a person, thus providing a depiction of it. Wikipedia
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="jumbotron">
-        <div class="row">
-            <div class="col-xs-6 col-md-4">
-                <img src="https://www.smashingmagazine.com/wp-content/uploads/2015/06/10-dithering-opt.jpg" width="100%" alt="..." class="img-rounded">
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-8">
-                <h2>University</h2>
-                <p>
-                    An image is an artifact that depicts visual perception, for example, a photo or a two-dimensional picture, that has a similar appearance to some subject—usually a physical object or a person, thus providing a depiction of it. Wikipedia
-                </p>
-            </div>
-        </div>
-    </div>
-    <div class="jumbotron">
-        <div class="row">
-            <div class="col-xs-6 col-md-4">
-                <img src="http://www.qygjxz.com/data/out/114/4676052-image.png" width="100%" alt="..." class="img-rounded">
-            </div>
-            <div class="col-xs-12 col-sm-6 col-md-8">
-                <h2>University</h2>
-                <p>
-                    An image is an artifact that depicts visual perception, for example, a photo or a two-dimensional picture, that has a similar appearance to some subject—usually a physical object or a person, thus providing a depiction of it. Wikipedia
-                </p>
-            </div>
-        </div>
-    </div>
-
 </div>
