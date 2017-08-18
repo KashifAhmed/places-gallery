@@ -60,12 +60,12 @@ module.exports = function(app, scope) {
     // Search item controller
     scope.controllers._searchItems = function(req, res) {
         var _requestingQuery = req.query,
-            _responseFields = '_id locationName country city',
+            _responseFields = '_id locationName country city description favorite',
             allowFields = {
                 latlng: 'string',
-                radius: 'number',
-
-            };
+                radius: 'number'
+            },
+            user = req.user;
 
         var _query = app.services._onlyAllow(allowFields, _requestingQuery);
 
@@ -80,6 +80,19 @@ module.exports = function(app, scope) {
         }
         scope.services._searchItem(_query, _responseFields, function(error, items) {
             if (error == null) {
+                var __items = [];
+                if(items.rows.length>0){
+                    items.rows.forEach(function(item){
+                        if(item.favorite.length>0 && item.favorite.indexOf(user.id)>-1){
+                            item._doc.isFavorite = true;
+                        }else{
+                            item._doc.isFavorite = false;
+                        }
+                        delete item._doc.favorite;
+                        __items.push(item._doc);
+                    });
+                    items.rows = __items;
+                }
                 res.status(200).send({
                     code: 200,
                     success: true,
