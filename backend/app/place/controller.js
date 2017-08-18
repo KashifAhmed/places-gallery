@@ -175,8 +175,99 @@ module.exports = function(app, scope) {
         }
     }
 
+    // Mark item in favorite
+    scope.controllers._markFavoriteItem = function(req, res) {
+        var _requestData = req.params,
+            requireDate = ['id'],
+            responseFileds = ['_id', 'locationName'],
+            user = req.user;
 
-    // Support Method
+        app.services._checkRequire(_requestData, requireDate, function(error) {
+            if (error == false) {
+                app.services._checkExist({ _id: _requestData.id, favorite: { $elemMatch: { "$in": [user.id] } } }, 'Place', function(error_checkExist, isExist) {
+                    if (error_checkExist == null) {
+                        if (!isExist) {
+                            var _query = { favorite: user.id };
+                            app.services._findAndPush({ _id: _requestData.id }, _query, 'Place', function(error_update, succes_update) {
+                                if (error_update == null) {
+                                    res.status(200).send({
+                                        code: 200,
+                                        succes: true,
+                                        message: "Succssfully add item",
+                                        data: app.services._successResponse(succes_update, responseFileds)
+                                    });
+                                } else {
+                                    res.status(503).send({
+                                        code: 503,
+                                        succes: false,
+                                        message: "Unable to update item",
+                                        error: error_update
+                                    });
+                                }
+                            });
+                        } else {
+                            var _query = { favorite: [user.id] };
+                            app.services._findAndPull({ _id: _requestData.id }, _query, 'Place', function(error_update, succes_update) {
+                                if (error_update == null) {
+                                    res.status(200).send({
+                                        code: 200,
+                                        succes: true,
+                                        message: "Succssfully remove item",
+                                        data: app.services._successResponse(succes_update, responseFileds)
+                                    });
+                                } else {
+                                    res.status(503).send({
+                                        code: 503,
+                                        succes: false,
+                                        message: "Unable to update item",
+                                        error: error_update
+                                    });
+                                }
+                            });
+                        }
+                    } else {
+                        res.status(503).send({
+                            code: 503,
+                            success: false,
+                            message: "Forbidden"
+                        });
+                    }
+                });
+            } else {
+                res.status(error.code).send(error);
+            }
+
+        });
+    }
+
+    // Get all my favorite Item
+    scope.controllers._getFavoriteItem = function(req, res) {
+            var _responseFields = '_id locationName',
+                user = req.user,
+                _query = { favorite: { $elemMatch: { "$in": [user.id] } } }
+            scope.services._searchItem(_query, _responseFields, function(error, items) {
+                if (error == null) {
+                    res.status(200).send({
+                        code: 200,
+                        success: true,
+                        message: "Successfully Retrieve Items",
+                        data: items
+                    });
+                } else {
+                    res.status(504).send({
+                        code: 504,
+                        succes: false,
+                        message: "Error On Retrieving Items",
+                        error: error
+                    });
+                }
+            });
+
+
+
+
+        }
+        // Support Method
     var milesToRadian = function(miles) {
         var earthRadiusInMiles = 3959;
         return miles / earthRadiusInMiles;

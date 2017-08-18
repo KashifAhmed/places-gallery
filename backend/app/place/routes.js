@@ -6,4 +6,9 @@ module.exports = function(app, router, scope) {
         .get(app.services._authorization, scope.controllers._searchItems)
         .put(app.services._authorization, scope.controllers._updateItem)
         .delete(app.services._authorization, scope.controllers._deleteItem);
+
+
+    router.route('/favorite/:id?')
+        .post(app.services._authorization, scope.controllers._markFavoriteItem)
+        .get(app.services._authorization, scope.controllers._getFavoriteItem)
 };

@@ -49,6 +49,9 @@ module.exports = function(app, db, scope) {
                 type: { type: String },
                 coordinates: [Number],
             },
+            favorite: {
+                type: [String]
+            },
             created_by: {
                 type: _Schema.ObjectId,
                 required: true,
