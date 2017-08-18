@@ -41,6 +41,20 @@ export default class Api {
         });
     }
 
+
+    createPlace(data){
+        var headers = JSON.parse(localStorage.getItem('placeGallery_headers'));
+        headers['Content-Type'] = 'multipart/form-data';
+        headers['withCredentials'] = true;
+        return this._$http({
+            url: this._api + '/place',
+            method: 'POST',
+            headers: headers,
+            data:data
+        });
+    }
+
+
     
     
     // For setting headers
