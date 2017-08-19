@@ -18,9 +18,10 @@ module.exports = function(app, scope) {
                     if (error_checkExist == null) {
                         if (!isExist) {
                             _requestData.created_by = req.user._id;
+                            var __geometry = JSON.parse(_requestData.latLng);
                             _requestData.geometry = {
                                 type: 'Point',
-                                coordinates: _requestData.latLng
+                                coordinates: [__geometry.lat, __geometry.lng]
                             }
                             if (req.files && req.files.placeImage) {
                                 var placeImage = req.files.placeImage;
@@ -96,7 +97,7 @@ module.exports = function(app, scope) {
     // Search item controller
     scope.controllers._searchItems = function(req, res) {
         var _requestingQuery = req.query,
-            _responseFields = '_id locationName country city description favorite',
+            _responseFields = '_id locationName country city description favorite created_by',
             allowFields = {
                 latlng: 'string',
                 radius: 'number'
@@ -117,13 +118,15 @@ module.exports = function(app, scope) {
         scope.services._searchItem(_query, _responseFields, function(error, items) {
             if (error == null) {
                 var __items = [];
-                if(items.rows.length>0){
-                    items.rows.forEach(function(item){
-                        if(item.favorite.length>0 && item.favorite.indexOf(user.id)>-1){
+                if (items.rows.length > 0) {
+                    items.rows.forEach(function(item) {
+                        if (item.favorite.length > 0 && item.favorite.indexOf(user.id) > -1) {
                             item._doc.isFavorite = true;
-                        }else{
+                        } else {
                             item._doc.isFavorite = false;
                         }
+                        item._doc.can_edit = item.created_by == user.id ? true : false;
+                        delete item._doc.created_by;
                         delete item._doc.favorite;
                         __items.push(item._doc);
                     });
@@ -150,9 +153,17 @@ module.exports = function(app, scope) {
     scope.controllers._updateItem = function(req, res) {
         if (req.params.id) {
             var updateObject = req.body,
-                responseFileds = ['title', '_id'],
+                requireDate = ['locationName', 'description', 'zipCode', 'province', 'country', 'city', 'address', 'latLng'],
+                responseFileds = ['_id', 'locationName', 'description', 'zipCode', 'province', 'country', 'city', 'address', 'geometry'],
                 allowFields = {
-                    title: 'string'
+                    locationName: 'string',
+                    description: 'string',
+                    zipCode: 'number',
+                    province: 'string',
+                    country: 'string',
+                    city: 'string',
+                    address: 'string',
+                    latLng: 'object'
                 }
                 //delete updateObject._id;
             var requestData = app.services._onlyAllow(allowFields, updateObject);
@@ -222,6 +233,37 @@ module.exports = function(app, scope) {
                 }
             });
         }
+    }
+
+    // Item Details
+    scope.controllers._itemDetails = function(req, res) {
+        var _requestData = req.params,
+            requireDate = ["id"];
+
+        app.services._checkRequire(_requestData, requireDate, function(error) {
+            if (error == false) {
+                var _responseFields = 'locationName description zipCode province country city address geometry favorite image created_by';
+                app.services.findOne({ _id: _requestData.id }, _responseFields, scope.collectionName, function(error, docs) {
+                    if (error) {
+                        res.status(503).send({
+                            code: 503,
+                            success: false,
+                            message: "Successfully Retrieve Items",
+                            error: error
+                        });
+                    } else {
+                        res.status(200).send({
+                            code: 200,
+                            success: true,
+                            message: "Successfully Retrieve Items",
+                            data: docs
+                        });
+                    }
+                });
+            } else {
+                res.status(error.code).send(error);
+            }
+        });
     }
 
     // Mark item in favorite

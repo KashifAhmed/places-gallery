@@ -2,9 +2,9 @@ export default class Api {
     constructor($http) {
         'ngInject';
 
-        this._api = 'http://localhost:5000/api';
+        this._api = 'http://localhost:8000/api';
         this._$http = $http;
-        
+
 
         // Object to store our user properties
         this.current = null;
@@ -22,47 +22,65 @@ export default class Api {
             }
         });
     }
-    searchPlaces(query){
+    searchPlaces(query) {
         var headers = JSON.parse(localStorage.getItem('placeGallery_headers'));
         return this._$http({
-            url: this._api + '/place',
+            url: this._api + '/search',
             method: 'GET',
             headers: headers,
             params: query
         });
     }
 
-    markFavorite(id){
+    markFavorite(id) {
         var headers = JSON.parse(localStorage.getItem('placeGallery_headers'));
         return this._$http({
-            url: this._api + '/favorite/'+id,
+            url: this._api + '/favorite/' + id,
             method: 'POST',
             headers: headers
         });
     }
 
 
-    createPlace(data){
+    createPlace(data) {
         var headers = JSON.parse(localStorage.getItem('placeGallery_headers'));
-        headers['Content-Type'] = 'multipart/form-data';
+        headers['Content-Type'] = undefined;
         headers['withCredentials'] = true;
         return this._$http({
             url: this._api + '/place',
             method: 'POST',
             headers: headers,
-            data:data
+            transformRequest: angular.identity,
+            data: data
+        });
+    }
+
+    getPlaceDetails(id) {
+        var headers = JSON.parse(localStorage.getItem('placeGallery_headers'));
+        return this._$http({
+            url: this._api + '/place/' + id,
+            method: 'GET',
+            headers: headers
+        });
+    }
+
+    updatePlace(data) {
+        var headers = JSON.parse(localStorage.getItem('placeGallery_headers'));
+        return this._$http({
+            url: this._api + '/place/' + data._id,
+            method: 'POST',
+            headers: headers,
+            data: data
         });
     }
 
 
-    
-    
     // For setting headers
-    setHeader(key,value){
+    setHeader(key, value) {
         var headers = JSON.parse(localStorage.getItem('placeGallery_headers')) || {};
         headers[key] = value;
         headers = JSON.stringify(headers);
-        localStorage.setItem('placeGallery_headers', headers);        
+        localStorage.setItem('placeGallery_headers', headers);
 
     }
 

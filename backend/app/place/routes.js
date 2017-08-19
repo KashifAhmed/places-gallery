@@ -4,9 +4,12 @@ var path = require('path');
 module.exports = function(app, router, scope) {
     router.route('/place/:id?')
         .post(app.services._authorization, scope.controllers._createItem)
-        .get(app.services._authorization, scope.controllers._searchItems)
+        .get(app.services._authorization, scope.controllers._itemDetails)
         .put(app.services._authorization, scope.controllers._updateItem)
         .delete(app.services._authorization, scope.controllers._deleteItem);
+
+    router.route('/search')
+        .get(app.services._authorization, scope.controllers._searchItems);
 
 
     router.route('/favorite/:id?')

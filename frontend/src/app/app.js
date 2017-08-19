@@ -24,7 +24,7 @@ let AppComponent = {
     controller: () => new AppController()
 };
 
-class AppController { }
+class AppController {}
 
 angular
     .module('synopsis', ['ngComponentRouter', 'ui.select', 'ngSanitize', 'ui.router'])
@@ -44,7 +44,10 @@ angular
             component: 'places'
         });
         $stateProvider.state('addPlace', {
-            url: '/addPlace',
+            url: 'addPlace/:id',
+            params: {
+                id: null
+            },
             component: 'addPlace'
         });
     })
@@ -56,27 +59,42 @@ angular
     .component('places', Places)
     .component('addPlace', AddPlace)
     .service('api', Api)
-    .directive('googleplace', function(){
+    .directive('googleplace', function() {
         return {
             require: 'ngModel',
-            link: function (scope, element, attrs, model) {
+            link: function(scope, element, attrs, model) {
                 var options = {
                     types: [],
                     componentRestrictions: {}
                 };
                 scope.gPlace = new google.maps.places.Autocomplete(element[0], options);
 
-                google.maps.event.addListener(scope.gPlace, 'place_changed', function () {
-                    scope.$apply(function () {
-                        model.$setViewValue(element.val());
+                google.maps.event.addListener(scope.gPlace, 'place_changed', function() {
+                    scope.$apply(function() {
+                        model.$setViewValue(scope.gPlace.getPlace());
                     });
                 });
             }
         };
     })
-    .run(()=>{
-         console.log('loadScript')
-        // use global document since Angular's $document is weak
+    .directive('fileModel', ['$parse', function($parse) {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                var model = $parse(attrs.fileModel);
+                var modelSetter = model.assign;
+
+                element.bind('change', function() {
+                    scope.$apply(function() {
+                        modelSetter(scope, element[0].files[0]);
+                    });
+                });
+            }
+        };
+    }])
+    .run(() => {
+        console.log('loadScript')
+            // use global document since Angular's $document is weak
         var s = document.createElement('script')
         s.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyALcGIIePykjVHVDZuslDg-D-ros9C4NXI&amp&libraries=places'
         document.body.appendChild(s)

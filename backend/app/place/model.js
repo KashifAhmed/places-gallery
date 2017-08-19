@@ -52,6 +52,9 @@ module.exports = function(app, db, scope) {
             favorite: {
                 type: [String]
             },
+            image: {
+                type: String
+            },
             created_by: {
                 type: _Schema.ObjectId,
                 required: true,
