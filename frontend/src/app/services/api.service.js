@@ -68,12 +68,15 @@ export default class Api {
         var headers = JSON.parse(localStorage.getItem('placeGallery_headers'));
         return this._$http({
             url: this._api + '/place/' + data._id,
-            method: 'POST',
+            method: 'PUT',
             headers: headers,
             data: data
         });
     }
 
+    clearLogin() {
+        localStorage.setItem('placeGallery_headers', '');
+    }
 
     // For setting headers
     setHeader(key, value) {

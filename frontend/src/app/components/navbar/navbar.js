@@ -1,44 +1,28 @@
 class NavBarController {
 
-    constructor() {
+    constructor($state, api) {
 
         this.brand = 'Synopsis';
+        this.$state = $state;
+        this.api = api;
 
-        // this.items = [{
-        //     href: '#',
-        //     label: 'Home',
-        //     isActive: true,
-        // }, {
-        //     href: '#',
-        //     label: 'About',
-        //     isActive: false
-        // }, {
-        //     href: '#',
-        //     label: 'Contact',
-        //     isActive: false
-        // }, {
-        //     href: '#',
-        //     label: 'Login',
-        //     isActive: false
-        // }, {
-        //     href: '#',
-        //     label: 'Register',
-        //     isActive: false
-        // }];
 
     }
+    loadPlaces() {
+        this.$state.go('places');
+    }
 
-    // onItemClicked(clickedItem) {
-    //     this.items = this.items.map((item) => {
-    //         item.isActive = item.label === clickedItem.label;
-    //         return item;
-    //     });
-    // }
+    logout() {
+        this.api.clearLogin();
+        this.$state.go('login');
+    }
+
 }
 
 const Navbar = {
     template: require('./navbar.html'),
-    controller: () => new NavBarController()
+    controller: ($state, api) => new NavBarController($state, api),
+    controllerAs: 'navCtrl'
 };
 
 export default Navbar;

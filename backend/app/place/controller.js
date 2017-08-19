@@ -97,10 +97,13 @@ module.exports = function(app, scope) {
     // Search item controller
     scope.controllers._searchItems = function(req, res) {
         var _requestingQuery = req.query,
-            _responseFields = '_id locationName country city description favorite created_by',
+            _responseFields = '_id locationName country city description favorite created_by image',
             allowFields = {
                 latlng: 'string',
-                radius: 'number'
+                radius: 'number',
+                city: 'string',
+                country: 'string',
+                locationName: 'string'
             },
             user = req.user;
 
@@ -153,7 +156,6 @@ module.exports = function(app, scope) {
     scope.controllers._updateItem = function(req, res) {
         if (req.params.id) {
             var updateObject = req.body,
-                requireDate = ['locationName', 'description', 'zipCode', 'province', 'country', 'city', 'address', 'latLng'],
                 responseFileds = ['_id', 'locationName', 'description', 'zipCode', 'province', 'country', 'city', 'address', 'geometry'],
                 allowFields = {
                     locationName: 'string',
@@ -168,7 +170,11 @@ module.exports = function(app, scope) {
                 //delete updateObject._id;
             var requestData = app.services._onlyAllow(allowFields, updateObject);
             // Check item already exist
-            app.services._checkExist({ title: requestData.title }, scope.collectionName, function(error_checkExist, isExist) {
+            var _checkExistQuery = {
+                _id: { '$ne': req.params.id },
+                locationName: requestData.locationName
+            };
+            app.services._checkExist(_checkExistQuery, scope.collectionName, function(error_checkExist, isExist) {
                 if (error_checkExist == null) {
                     if (!isExist) {
                         // If item not exist then update

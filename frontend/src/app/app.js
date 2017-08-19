@@ -28,8 +28,7 @@ class AppController {}
 
 angular
     .module('synopsis', ['ngComponentRouter', 'ui.select', 'ngSanitize', 'ui.router'])
-    .config(($locationProvider, $stateProvider) => {
-        $locationProvider.html5Mode(true);
+    .config(($locationProvider, $stateProvider, $urlRouterProvider) => {
 
         $stateProvider.state('login', {
             url: '/login',
@@ -50,6 +49,8 @@ angular
             },
             component: 'addPlace'
         });
+        $urlRouterProvider.otherwise('login');
+
     })
     .value('$routerRootComponent', 'app')
     .component('app', AppComponent)

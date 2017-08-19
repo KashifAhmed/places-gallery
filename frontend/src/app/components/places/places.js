@@ -5,27 +5,32 @@ class placesController {
         this.$state = $state;
         this.itemsList;
         this.searchPlace();
+        this.query = {};
     }
 
     searchPlace() {
-        this.api.searchPlaces()
-            .then((response) => {
-                if (response.status == 200) {
-                    this.itemsList = response.data.data;
-                    console.log(this.itemsList);
-                } else if (response.status == 401) {
-                    this.$state.go('login')
-                } else {
-                    console.log(response.data);
-                }
-            })
-            .catch((err) => {
-                if (err.status == 401) {
-                    this.$state.go('login')
-                } else {
-                    console.log(err);
-                }
-            });
+        navigator.geolocation.getCurrentPosition((position) => {
+            this.query.latLng = [position.coords.latitude, position.coords.longitude];
+            this.api.searchPlaces(this.query)
+                .then((response) => {
+                    if (response.status == 200) {
+                        this.itemsList = response.data.data;
+                        console.log(this.itemsList);
+                    } else if (response.status == 401) {
+                        this.$state.go('login')
+                    } else {
+                        console.log(response.data);
+                    }
+                })
+                .catch((err) => {
+                    if (err.status == 401) {
+                        this.$state.go('login')
+                    } else {
+                        console.log(err);
+                    }
+                });
+        });
+
     }
 
     markFavorite(place) {

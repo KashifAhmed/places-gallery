@@ -3,42 +3,45 @@
         <div>
             <h3>{{addPlaceCtrl.form._id?'Update Place': 'Add Place'}}</h3>
         </div>
+        <div class="col-md-12 text-center">
+            <img class="col-md-4" src="http://localhost:8000/uploads/{{addPlaceCtrl.form.image}}" alt="{{addPlaceCtrl.form.locationName}}" ng-if="addPlaceCtrl.form.image">
+        </div>
         <form class="form-horizontal row" role="form" ng-submit="addPlaceCtrl.submitForm()">
             <div class="form-group col-md-4">
                 <label for="placeName" class="control-label">Place Name</label>
-                <input type="text" class="form-control" id="placeName" placeholder="Place Name" ng-model="addPlaceCtrl.form.locationName">
+                <input type="text" class="form-control" id="placeName" placeholder="Place Name" ng-model="addPlaceCtrl.form.locationName" required>
             </div>
             <div class="form-group col-md-4">
                 <label for="zipCode" class="control-label">Zip Code</label>
-                <input type="text" class="form-control" id="zipCode" placeholder="75448" ng-model="addPlaceCtrl.form.zipCode">
+                <input type="text" class="form-control" id="zipCode" placeholder="75448" ng-model="addPlaceCtrl.form.zipCode" required>
             </div>
-            <div class="form-group col-md-4">
+            <div class="form-group col-md-4" ng-if="!addPlaceCtrl.form.image">
                 <label for="placeImage" class="control-label">Image</label>
-                <input type="file" class="form-control" id="placeImage" placeholder="Add Image" file-model="addPlaceCtrl.form.photo">
+                <input type="file" class="form-control" id="placeImage" placeholder="Add Image" file-model="addPlaceCtrl.form.photo" required>
             </div>
             <div class="form-group col-md-12">
                 <label for="placeDescription" class="control-label">About Place</label>
-                <textarea class="col-md-12" cols="50" id="placeDescription" placeholder="Write about place" ng-model="addPlaceCtrl.form.description"></textarea>
+                <textarea class="col-md-12" cols="50" id="placeDescription" placeholder="Write about place" ng-model="addPlaceCtrl.form.description" required></textarea>
             </div>
             <div class="form-group col-md-4">
                 <label for="country" class="control-label">Country</label>
-                <input type="text" class="form-control" id="country" placeholder="Country Name" ng-model="addPlaceCtrl.form.country">
+                <input type="text" class="form-control" id="country" placeholder="Country Name" ng-model="addPlaceCtrl.form.country" required>
             </div>
             <div class="form-group col-md-4">
                 <label for="city" class="control-label">City</label>
-                <input type="text" class="form-control" id="city" placeholder="City Name" ng-model="addPlaceCtrl.form.city">
+                <input type="text" class="form-control" id="city" placeholder="City Name" ng-model="addPlaceCtrl.form.city" required>
             </div>
             <div class="form-group col-md-4">
                 <label for="province" class="control-label">Province</label>
-                <input type="text" class="form-control" id="province" placeholder="Province Name" ng-model="addPlaceCtrl.form.province">
+                <input type="text" class="form-control" id="province" placeholder="Province Name" ng-model="addPlaceCtrl.form.province" required>
             </div>
             <div class="form-group col-md-4">
                 <label for="address" class="control-label">Address</label>
-                <input type="text" class="form-control" id="address" placeholder="Enter Your Address" googleplace ng-model="addPlaceCtrl.form.address">
+                <input type="text" class="form-control" id="address" placeholder="Enter Your Address" googleplace ng-model="addPlaceCtrl.form.address" required>
             </div>
             <div class="form-group col-md-12">
                 <div class="offset-md-10 col-md-2 no-padding">
-                    <button type="submit" class="btn btn-primary">{{addPlaceCtrl.form._id?'Update Place': 'Add Place'}}</button>
+                    <button type="submit" class="btn btn-primary" ng-disabled="addPlaceCtrl.form.$invalid">{{addPlaceCtrl.form._id?'Update Place': 'Add Place'}}</button>
                 </div>
             </div>
         </form>

@@ -1,8 +1,9 @@
 class addPlaceController {
 
-    constructor(api, $stateParams) {
+    constructor(api, $stateParams, $state) {
         this.api = api;
         this.form = {};
+        this.$state = $state;
         if ($stateParams.id) {
             this.api.getPlaceDetails($stateParams.id)
                 .then((response) => {
@@ -41,7 +42,7 @@ class addPlaceController {
         this.api.createPlace(fd)
             .then((response) => {
                 if (response.status == 200) {
-                    $state.go('place');
+                    this.$state.go('places');
                 }
             })
             .catch((error) => {
@@ -50,13 +51,21 @@ class addPlaceController {
     }
 
     updatePlace() {
+        var _query = angular.copy(this.form);
+        if (typeof _query.address == "string") {
+            delete _query.geometry;
+        } else {
+            var geomertry = this.form.address.geometry.location.toJSON();
+            _query.address = this.form.address.formatted_address;
+            _query.latLng = [geomertry.lat, geomertry.lng];
+        }
         this.api.updatePlace(this.form)
-            .then(function(response) {
+            .then((response) => {
                 if (response.status == 200) {
-                    $state.go('place');
+                    this.$state.go('places');
                 }
             })
-            .catch(function(error) {
+            .catch((error) => {
                 console.log(error);
             })
     }
@@ -64,7 +73,7 @@ class addPlaceController {
 
 const AddPlace = {
     template: require('./addPlace.html'),
-    controller: (api, $stateParams) => new addPlaceController(api, $stateParams),
+    controller: (api, $stateParams, $state) => new addPlaceController(api, $stateParams, $state),
     controllerAs: 'addPlaceCtrl'
 };
 
