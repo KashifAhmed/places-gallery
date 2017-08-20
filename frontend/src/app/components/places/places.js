@@ -49,6 +49,10 @@ class placesController {
         this.$state.go('addPlace', { id: id });
     }
 
+    addNew() {
+        this.$state.go('addPlace', { id: null });
+    }
+
 }
 
 const Places = {

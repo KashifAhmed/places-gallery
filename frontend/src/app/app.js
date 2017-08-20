@@ -31,7 +31,7 @@ angular
     .config(($locationProvider, $stateProvider, $urlRouterProvider) => {
 
         $stateProvider.state('login', {
-            url: '/login',
+            url: '/',
             component: 'login'
         });
         $stateProvider.state('register', {
@@ -49,8 +49,6 @@ angular
             },
             component: 'addPlace'
         });
-        $urlRouterProvider.otherwise('login');
-
     })
     .value('$routerRootComponent', 'app')
     .component('app', AppComponent)

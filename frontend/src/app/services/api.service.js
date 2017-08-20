@@ -75,7 +75,7 @@ export default class Api {
     }
 
     clearLogin() {
-        localStorage.setItem('placeGallery_headers', '');
+        localStorage.setItem('placeGallery_headers', JSON.stringify({}));
     }
 
     // For setting headers

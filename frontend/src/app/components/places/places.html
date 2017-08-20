@@ -1,6 +1,6 @@
 <div class="container">
     <div>
-        <button ui-sref="addPlace" type="button" class="pull-right btn btn-success btn-outline-success">Add</button>
+        <button ng-click="placesCtrl.addNew()" type="button" class="pull-right btn btn-success btn-outline-success">Add</button>
         <h3>Places</h3>
         <div>
             <form class="row" ng-submit="placesCtrl.searchPlace()">
